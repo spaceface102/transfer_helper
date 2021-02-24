@@ -1,12 +1,15 @@
 #!/usr/bin/python3
+import sys
 import pickle #used to serialize data for later use; store dicts in bytes
 
 def store(data, fname = "course.data"):
+	"pickle data and store into fname"
 	with open(fname, "wb") as f:
 		pickle.dump(data, f)
 
 
 def extract(fname = "course.data"):
+	"unpickle data and return if for use in other funcs"
 	try:
 		with open(fname, "rb") as f:
 			temp = pickle.load(f) 
@@ -27,6 +30,7 @@ def process_name(name):
 
 
 def addnew(name = None): 
+	"add a new school's transfer requirments"
 	course_dict = extract()
 	print("\n")#spacer
 	if not name:
@@ -52,10 +56,13 @@ def addnew(name = None):
 	print("Done!")
 
 
-def checkschool():
+
+def checkschool(name = None):
+	"print all the courses related with a specific course"
 	course_dict = extract()
 	print("\n")#spacer
-	name = process_name(input("What is the name of the instituion: "))
+	if not name:
+		name = process_name(input("What is the name of the instituion: "))
 	print(f"These are the courses related to {name}")
 
 	count = 0
@@ -71,9 +78,11 @@ def checkschool():
 			addnew(name = name)
 		else:
 			print("Done!")
-
+	#for "add_course" and "remove_course" action, use return value to pipe to addnew()
+	return name 
 
 def displayall():
+	"display all the courses and the related institutions"
 	course_dict = extract()
 	print("\n")#spacer
 	print("These are all the course!")
@@ -86,28 +95,34 @@ def displayall():
 	print("Done!")
 
 
+
+
+
 def main():
 	print("What would you like to do?")
 	options = [
-	"Add new school/course", "Check school",
+	"Add new school", 
+	"Check school",
+	"Add course to exisiting school",
 	"Remove course from a school",
-	"Display all courses", "Remove a school",
+	"Display all courses", 
+	"Remove a school",
 	"Quit"]
-	functions = [#solves problem of functions not being local to main
-	lambda : addnew(), lambda : checkschool(), lambda : remove_course(),
-	lambda : displayall(), lambda : remove_school()]			
+	#no conditional statements!
+	functions = [#lambda solves problem of functions not being local to main
+	lambda : addnew(), 
+	lambda : checkschool(), 
+	lambda : addnew(checkschool()), 
+	lambda : addnew(checkschool()),
+	lambda : displayall(), 
+	lambda : remove_school(), 
+	lambda : sys.exit("Please come again!")]			
 
-	cond = True
-	while cond:
+	while True:
 		for i, opt in enumerate(options): print(str(i+1)+'. '+opt)
 		x = int(input("Please choose: "))
-
-		if x == len(options): #make sure 'Quit' option always at end!
-			print("Please come again!")
-			cond = False
-		else:
-			functions[x - 1]()	
-
+		functions[x - 1]()	
+	
 
 if __name__ == '__main__':
 	main()
