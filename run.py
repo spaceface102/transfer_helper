@@ -232,7 +232,7 @@ def main():
 		for i, opt in enumerate(options): print(str(i+1)+'. '+opt)
 		x = input("Please choose: ")
 		if x.isnumeric() and (x := int(x)) >= 1 and x <= num_funcs:
-			functions[int(x) - 1]()	
+			functions[x - 1]()	
 		else:
 			print(f"Please choose one of the options!(1-{len(functions)})\n")
 		print() #new line
